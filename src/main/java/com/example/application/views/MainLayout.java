@@ -1,16 +1,13 @@
 package com.example.application.views;
 
 import com.example.application.security.SecurityService;
-import com.example.application.views.list.ListView;
-import com.vaadin.flow.component.UI;
+import com.example.application.views.user.LoginView;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.HighlightConditions;
 import com.vaadin.flow.router.RouterLink;
 
 public class MainLayout extends AppLayout {
@@ -22,12 +19,13 @@ public class MainLayout extends AppLayout {
     }
 
     private void createHeader() {
-        H1 logo = new H1("Vaadin CRM");
+        H1 logo = new H1("TRANSPORT INFORMATION PORTAL");
         logo.addClassNames("text-l", "m-m");
         HorizontalLayout header = new HorizontalLayout(new DrawerToggle(), logo);
 
         if (securityService.getAuthenticatedUser() != null) {
-            Button logout = new Button("Log out", e -> securityService.logout());
+            String userName = securityService.getAuthenticatedUser().getUsername();
+            Button logout = new Button("Log out: " + userName, e -> securityService.logout());
             header.add(logout);
         }
         else {

@@ -1,0 +1,8 @@
+.home-page {
+    background-color: black;
+}
+
+.upcoming-trip-board {
+    border: black;
+    background: linear-gradient(to right, #18c64f, #6dff58)
+}

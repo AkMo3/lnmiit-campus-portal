@@ -1,64 +1,75 @@
 package com.example.application.data.entity;
 
+import lombok.Data;
+
+import javax.annotation.Nullable;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Entity
+@Data
 public class TripDetail extends AbstractEntity {
 
     @ManyToOne
-    private Person tripCreator;
+    @NotNull
+    private Student student;
 
     @NotNull
     private LocalDateTime timeOfDeparture;
 
-    @ManyToOne
-    private Place placeOfDeparture;
+    @NotNull
+    private LocalDateTime timeOfArrival;
+
+    @NotBlank
+    private String toLocation;
+
+    private boolean reviewPending = true;
+
+    @Nullable
+    private Boolean approved = null;
+
+    private String purposeOfVisit;
+
+    private String reviewerRole;
+
+    private LocalDateTime actualOutTime;
+
+    private LocalDateTime actualInTime;
+
+    @NotNull
+    private boolean leftCampus = false;
+
+    @NotNull
+    private boolean arrivedCampusBack = false;
 
     @ManyToOne
-    private Place toLocation;
+    private HostelAdmin reviewer;
 
-    private Integer occupancyLeft;
+    @PrePersist
+    @PreUpdate
+    private void initReviewer() {
 
-    public Person getTripCreator() {
-        return tripCreator;
+        if (timeOfDeparture.toLocalDate().equals(timeOfArrival.toLocalDate())) {
+            reviewerRole = "CARETAKER";
+        }
+        else reviewerRole = "WARDEN";
     }
 
-    public void setTripCreator(Person tripCreator) {
-        this.tripCreator = tripCreator;
+    public Optional<HostelAdmin> getOptionalReviewer() {
+        return Optional.ofNullable(reviewer);
     }
 
-    public LocalDateTime getTimeOfDeparture() {
-        return timeOfDeparture;
+    public String getReviewerName() {
+        return (getOptionalReviewer().isPresent() ? getOptionalReviewer().get().getAccountName() : "");
     }
 
-    public void setTimeOfDeparture(LocalDateTime timeOfDeparture) {
-        this.timeOfDeparture = timeOfDeparture;
-    }
-
-    public Place getPlaceOfDeparture() {
-        return placeOfDeparture;
-    }
-
-    public void setPlaceOfDeparture(Place placeOfDeparture) {
-        this.placeOfDeparture = placeOfDeparture;
-    }
-
-    public Place getToLocation() {
-        return toLocation;
-    }
-
-    public void setToLocation(Place toLocation) {
-        this.toLocation = toLocation;
-    }
-
-    public Integer getOccupancyLeft() {
-        return occupancyLeft;
-    }
-
-    public void setOccupancyLeft(Integer occupancyLeft) {
-        this.occupancyLeft = occupancyLeft;
+    public String getApprovalStatus() {
+        return approved == null ? "Pending" : approved ? "Approved" : "Declined";
     }
 }
