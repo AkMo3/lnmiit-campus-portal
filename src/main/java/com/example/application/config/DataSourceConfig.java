@@ -49,7 +49,7 @@ public class DataSourceConfig {
         dataSourceBuilder.driverClassName("com.mysql.cj.jdbc.Driver");
         dataSourceBuilder.url("jdbc:mysql://localhost:3306/LNMIIT_TRANSPORT");
         dataSourceBuilder.username("lnmuser");
-        dataSourceBuilder.password("password");
+        dataSourceBuilder.password("Password@123");
         return dataSourceBuilder.build();
     }
 }

@@ -49,5 +49,5 @@ public interface TripDetailRepository extends JpaRepository<TripDetail, UUID> {
     List<TripDetail> findAllReviewedTripDetailsByRollNumber(@Param("email") String email,
                                                             @Param("rollNumber") String id);
 
-    Optional<TripDetail> findTopByStudentRollNumber(String rollNumber);
+    List<TripDetail> findTop5ByStudentRollNumberOrderByTimeOfDeparture(String rollNumber);
 }

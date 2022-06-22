@@ -1,17 +1,14 @@
 package com.example.application.views.user;
 
+import com.example.application.component.TripDetailComponent;
 import com.example.application.data.entity.Student;
 import com.example.application.data.entity.TripDetail;
 import com.example.application.data.repository.TripDetailRepository;
 import com.example.application.security.SecurityService;
 import com.example.application.service.StudentService;
-import com.example.application.views.MainLayout;
-import com.vaadin.flow.component.board.Board;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -20,17 +17,20 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
-@CssImport("META-INF/resources/frontend/styles/homepage.css")
+@CssImport(value = "styles/home-page.css", themeFor = "home-page")
 
-@Route(value = "/user/home", layout = MainLayout.class)
+@Route(value = "/user/home")
 @PageTitle("Home")
 public class HomePage extends VerticalLayout {
 
     private final StudentService studentService;
     private final SecurityService securityService;
     private final TripDetailRepository tripDetailRepository;
+    private List<TripDetail> top5Trips;
 
     private Optional<Student> student;
 
@@ -42,45 +42,149 @@ public class HomePage extends VerticalLayout {
 
         this.addClassName("home-page");
 
-        H2 greeting = new H2("Good Evening");
+        if (!isStudentSuccessful()) {return;}
+        else {
+
+            top5Trips = tripDetailRepository
+                    .findTop5ByStudentRollNumberOrderByTimeOfDeparture(student.orElseThrow().getRollNumber());
+
+
+            VerticalLayout greetingComponent = getGreetingComponent();
+            if (greetingComponent.hasClassName("no-login-greeting")) {
+                add(greetingComponent);
+                return;
+            }
+
+            HorizontalLayout tripBoards = new HorizontalLayout(getUpcomingTripBoard(), getOngoingTripBoard(),
+                    getLastTripBoard());
+            tripBoards.setSizeFull();
+
+            add(greetingComponent, getRegisterNewTripComponent(), tripBoards);
+            setSizeFull();
+            this.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+        }
+    }
+
+    private VerticalLayout getUpcomingTripBoard() {
+
+        Optional<TripDetail> upcomingTripOptional = getNextUpcomingTrip();
+        if (upcomingTripOptional.isEmpty()) return null;
+        TripDetail trip = upcomingTripOptional.get();
+        Label upcomingTripLabel = new Label("Upcoming Trip");
+        upcomingTripLabel.addClassName("new-trip-header");
+        VerticalLayout board = getTripBoardWithClass(trip);
+        board.addClassName("upcoming-trip-board");
+        return new VerticalLayout(upcomingTripLabel, board);
+    }
+
+    private VerticalLayout getOngoingTripBoard() {
+
+        Optional<TripDetail> upcomingTripOptional = getCurrentTrip();
+        if (upcomingTripOptional.isEmpty()) return null;
+        TripDetail trip = upcomingTripOptional.get();
+        Label upcomingTripLabel = new Label("Ongoing Trip");
+        upcomingTripLabel.addClassName("new-trip-header");
+        VerticalLayout board = getTripBoardWithClass(trip);
+        board.addClassName("ongoing-trip-board");
+        return new VerticalLayout(upcomingTripLabel, board);
+    }
+
+    private VerticalLayout getLastTripBoard() {
+
+        Optional<TripDetail> upcomingTripOptional = getLastTrip();
+        if (upcomingTripOptional.isEmpty()) return null;
+        TripDetail trip = upcomingTripOptional.get();
+        Label upcomingTripLabel = new Label("Last Trip");
+        upcomingTripLabel.addClassName("new-trip-header");
+        VerticalLayout board = getTripBoardWithClass(trip);
+        board.addClassName("last-trip-board");
+        return new VerticalLayout(upcomingTripLabel, board);
+    }
+
+    private VerticalLayout getRegisterNewTripComponent() {
+
+        Label newTripLabel = new Label("Ready for a new trip?");
+        newTripLabel.addClassName("new-trip-label");
+        RouterLink routerLink = new RouterLink("Create a new pass", TripDetailForm.class);
+        routerLink.getStyle().set("color", "white");
+        Button registerButton = new Button(routerLink);
+        registerButton.addClassName("new-trip-button");
+        return new VerticalLayout(newTripLabel, registerButton);
+    }
+
+    private VerticalLayout getGreetingComponent() {
+        Label greeting = new Label("Good Evening");
         greeting.addClassName("greeting-button");
         UserDetails authenticatedUser = securityService.getAuthenticatedUser();
 
         if (authenticatedUser == null) {
+            setAlignItems(Alignment.CENTER);
+            setJustifyContentMode(JustifyContentMode.CENTER);
+            VerticalLayout layout = new VerticalLayout(new H1("Please Login First"));
+            layout.setClassName("no-login-greeting");
+            return layout;
+        }
+
+        student = studentService.findStudentByRollNumber(authenticatedUser.getUsername());
+        Label studentName = new Label(student.orElseThrow().getName());
+        studentName.addClassName("student-name-button");
+        return new VerticalLayout(greeting, studentName);
+    }
+
+    private Optional<TripDetail> getNextUpcomingTrip() {
+        LocalDateTime now = LocalDateTime.now();
+        TripDetail upcomingTrip = null;
+
+        for (TripDetail trip: top5Trips) {
+            if (trip.getTimeOfDeparture().isAfter(now)) upcomingTrip = trip;
+        }
+
+        return Optional.ofNullable(upcomingTrip);
+    }
+
+    private Optional<TripDetail> getCurrentTrip() {
+        LocalDateTime now = LocalDateTime.now();
+        TripDetail upcomingTrip = null;
+
+        for (TripDetail trip: top5Trips) {
+            if (trip.getTimeOfDeparture().isBefore(now) &&
+            trip.getTimeOfArrival().isAfter(now)) upcomingTrip = trip;
+        }
+
+        return Optional.ofNullable(upcomingTrip);
+    }
+
+    private Optional<TripDetail> getLastTrip() {
+        LocalDateTime now = LocalDateTime.now();
+        TripDetail upcomingTrip = null;
+
+        for (TripDetail trip: top5Trips) {
+            if (trip.getTimeOfDeparture().isAfter(now)) {
+                upcomingTrip = trip;
+                break;
+            }
+        }
+
+        return Optional.ofNullable(upcomingTrip);
+    }
+
+    private boolean isStudentSuccessful() {
+        UserDetails authenticatedUser = securityService.getAuthenticatedUser();
+        if (authenticatedUser == null) {
             add(new H1("Please Login First"));
             setAlignItems(Alignment.CENTER);
             setJustifyContentMode(JustifyContentMode.CENTER);
-            return;
+            return false;
         }
-        student = studentService.findStudentByRollNumber(authenticatedUser.getUsername());
-        H3 studentName = new H3(student.orElseThrow().getName());
-        studentName.addClassName("student-name-button");
-
-        HorizontalLayout horizontalLayout = new HorizontalLayout();
-        horizontalLayout.add(new Button(new RouterLink("Register Request", TripDetailForm.class)));
-        horizontalLayout.add(new Button(new RouterLink("Past Trip Details Request",
-                PastOutpassRequestView.class)));
-
-        add(getUpcomingTripBoard(), horizontalLayout);
-        setSizeFull();
-        this.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+        else {
+            student = studentService.findStudentByRollNumber(authenticatedUser.getUsername());
+            return true;
+        }
     }
 
-    private Board getUpcomingTripBoard() {
-        Optional<TripDetail> upcomingTripOptional = tripDetailRepository
-                .findTopByStudentRollNumber(student.orElseThrow().getRollNumber());
-        if (upcomingTripOptional.isEmpty()) return null;
-        TripDetail trip = upcomingTripOptional.get();
-        Board upcomingTripBoard = new Board();
-        upcomingTripBoard.addClassName("upcoming-trip-board");
-        upcomingTripBoard.addRow(new Label("Date: "
-                + trip.getTimeOfDeparture().getDayOfWeek()
-                + ", " + trip.getTimeOfDeparture().toLocalDate().toString()));
-        upcomingTripBoard.addRow(new Label("Purpose of visit: " + trip.getPurposeOfVisit()));
-        upcomingTripBoard.addRow(new Label("Time: " + trip.getTimeOfDeparture()
-                .toLocalTime().toString() + " to "
-                + trip.getTimeOfArrival().toLocalTime().toString()));
-        upcomingTripBoard.addRow(new Label("Approval Status: " + trip.getApprovalStatus()));
-        return upcomingTripBoard;
+    private VerticalLayout getTripBoardWithClass(TripDetail tripDetail) {
+        VerticalLayout layout = new TripDetailComponent(tripDetail);
+        layout.addClassName("trip-board");
+        return layout;
     }
 }

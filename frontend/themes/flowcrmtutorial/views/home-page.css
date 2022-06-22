@@ -1,11 +1,95 @@
 
-@media all and (max-width: 1100px) {
-    .home-page {
-        background-color: black;
-    }
+.home-page {
+    background-color: black;
+    color: white;
+}
 
-    .upcoming-trip-board {
-        border: black;
-        background: linear-gradient(to right, #18c64f, #6dff58)
-    }
+.new-trip-header {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 32px;
+    line-height: 39px;
+
+    /* identical to box height */
+    letter-spacing: 0.02em;
+
+    color: #FFFFFF;
+}
+
+.greeting-button {
+    font-family: Inter;
+    color: white;
+    font-style: normal;
+    font-weight: 800;
+    font-size: 50px;
+    line-height: 55px;
+
+    /* identical to box height */
+    letter-spacing: 0.02em;
+
+    background: linear-gradient(90deg, #7EB6FF 0%, #F0C5FF 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-fill-color: transparent;
+    border: 0;
+    padding: 0;
+}
+
+.student-name-button {
+    font-family: Inter;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 29px;
+    border: 0;
+    padding: 0;
+
+    /* identical to box height */
+    letter-spacing: 0.02em;
+
+    color: #FFFFFF;
+}
+
+.new-trip-label {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 32px;
+    line-height: 39px;
+
+    /* identical to box height */
+    letter-spacing: 0.02em;
+
+    color: #FFFFFF;
+}
+
+.new-trip-button {
+    color: white;
+    background: linear-gradient(90deg, #BDC3C7 0%, #2C3E50 100%);
+    border: 1px solid #FFFFFF;
+    border-radius: 12px;
+}
+
+.trip-board {
+    border: black;
+    max-width: 20%;
+    min-width: 400px;
+    border-radius: 12px;
+    font-family: Inter, ui-monospace;
+    font-size: 16px;
+    font-weight: 700;
+    align-self: flex-start;
+}
+
+.upcoming-trip-board {
+    background: linear-gradient(to right, #11998E, #38EF7D);
+}
+
+.ongoing-trip-board {
+    background: linear-gradient(90deg, #E94057 0%, #F27121 100%);
+}
+
+.last-trip-board {
+    background: linear-gradient(90deg, #00C6FF 0%, #0072FF 100%);
 }
