@@ -1,5 +1,7 @@
 @import url('./views/list-view.css');
 @import url('./views/home-page.css');
+@import url('./views/index-page.css');
+@import url('./views/index-anime.css');
 /*@import url('lumo-css-framework/all-classes.css');*/
 
 a[highlight] {

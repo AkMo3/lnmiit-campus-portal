@@ -1,8 +1,12 @@
 package com.example.application.views.admin;
 
 import com.example.application.data.registerservice.admin.RegisterAdminService;
+import com.example.application.utils.AnimationService;
 import com.example.application.views.main.MainView;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dependency.JavaScript;
+import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.login.LoginForm;
@@ -23,10 +27,11 @@ public class AdminLogin extends VerticalLayout implements BeforeEnterObserver {
             MainView.class));
 
     public AdminLogin(RegisterAdminService registerService){
-        addClassName("login-view");
+        setClassName("login-view");
         setSizeFull();
         setAlignItems(FlexComponent.Alignment.CENTER);
         setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+//        new AnimationService().removeBubbles();
 
         login.setAction("/admin/login");
         registration = new AdminRegistration(registerService);

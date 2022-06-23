@@ -1,0 +1,42 @@
+.black-background {
+  background: black;
+}
+
+h1, h2 {
+  font-family: Inter, monospace;
+  color : white;
+}
+
+#stars {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  z-index: 1;
+}
+
+.on-top-layout {
+  position: absolute;
+  justify-content: center;
+  top: 20%;
+  width: 100%;
+  text-align: center;
+  z-index: 1;
+  background-color:transparent !important;
+}
+
+.opacity-one {
+  opacity: 1;
+  z-index: 1;
+}
+
+
+#canvas {
+  min-height: 1000px;
+  width: available;
+  z-index: -4;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+

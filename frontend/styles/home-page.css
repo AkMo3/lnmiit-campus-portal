@@ -2,9 +2,6 @@
 .home-page {
     background-color: black;
     color: white;
-    overflow: hidden;
-    height: 100%;
-    margin: 0;
 }
 
 .new-trip-header {
@@ -95,4 +92,40 @@
 
 .last-trip-board {
     background: linear-gradient(90deg, #00C6FF 0%, #0072FF 100%);
+}
+
+#stars {
+    display: block;
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    z-index: 1;
+}
+
+.on-top-layout {
+
+    padding-top: 0;
+    position: absolute;
+    justify-content: center;
+    top: 8px;
+    left: 16px;
+    width: 100%;
+    text-align: center;
+    z-index: 1;
+    background-color:transparent !important;
+}
+
+.opacity-one {
+    opacity: 1;
+    z-index: 1;
+}
+
+
+#canvas {
+    min-height: 1000px;
+    width: available;
+    z-index: -4;
+    position: absolute;
+    top: 0;
+    left: 0;
 }

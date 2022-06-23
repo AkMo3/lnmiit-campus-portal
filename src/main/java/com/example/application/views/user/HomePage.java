@@ -6,6 +6,8 @@ import com.example.application.data.entity.TripDetail;
 import com.example.application.data.repository.TripDetailRepository;
 import com.example.application.security.SecurityService;
 import com.example.application.service.StudentService;
+import com.example.application.utils.AnimationService;
+import com.vaadin.flow.component.Unit;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.H1;
@@ -16,6 +18,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.vaadin.pekkam.Canvas;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -44,6 +47,7 @@ public class HomePage extends VerticalLayout {
 
         if (!isStudentSuccessful()) {return;}
         else {
+            Canvas canvas = new AnimationService().getStrikeBackground();
 
             top5Trips = tripDetailRepository
                     .findTop5ByStudentRollNumberOrderByTimeOfDeparture(student.orElseThrow().getRollNumber());
@@ -58,9 +62,14 @@ public class HomePage extends VerticalLayout {
             HorizontalLayout tripBoards = new HorizontalLayout(getUpcomingTripBoard(), getOngoingTripBoard(),
                     getLastTripBoard());
             tripBoards.setSizeFull();
+            tripBoards.setHeight(200, Unit.PIXELS);
 
-            add(greetingComponent, getRegisterNewTripComponent(), tripBoards);
+            VerticalLayout layout = new VerticalLayout(greetingComponent, getRegisterNewTripComponent(), tripBoards);
+            layout.addClassName("on-top-layout");
+            layout.getStyle().set("top", "10%");
+            add(canvas, layout);
             setSizeFull();
+            setSpacing(false);
             this.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
         }
     }

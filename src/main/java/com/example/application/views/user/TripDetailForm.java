@@ -31,7 +31,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.time.Duration;
 import java.util.Optional;
 
-@Route(value = "/user/register", layout = MainLayout.class)
+@Route(value = "/user/register")
 public class TripDetailForm extends VerticalLayout {
 
     private final Label studentName = new Label();

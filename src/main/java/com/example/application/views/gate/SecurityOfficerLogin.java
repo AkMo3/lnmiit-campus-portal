@@ -1,6 +1,7 @@
 package com.example.application.views.gate;
 
 import com.example.application.data.registerservice.securityofficer.SecurityOfficerService;
+import com.example.application.utils.AnimationService;
 import com.example.application.views.main.MainView;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H1;
@@ -27,6 +28,7 @@ public class SecurityOfficerLogin extends VerticalLayout implements BeforeEnterO
         setSizeFull();
         setAlignItems(FlexComponent.Alignment.CENTER);
         setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+//        new AnimationService().removeBubbles();
 
         login.setAction("/security/login");
         registration = new SecurityOfficerRegistration(securityOfficerService);
